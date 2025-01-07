@@ -3,12 +3,15 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from dotenv import load_dotenv
+from datetime import datetime, timezone
+from flask_migrate import Migrate
 
 # Load environment variables from the .env file
 load_dotenv()
 # Initialize Flask app and database
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'default_secret_key')
+
 
 # Get database credentials from environment variables
 DB_USERNAME = os.getenv('DB_USERNAME')
@@ -21,6 +24,8 @@ DB_NAME = os.getenv('DB_NAME')
 app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+migrate = Migrate(app, db)
 
 # User Model
 class User(db.Model):
@@ -50,6 +55,7 @@ class StudentDetails(db.Model):
     city = db.Column(db.String(50), nullable=False)
     state = db.Column(db.String(50), nullable=False)
     zip_code = db.Column(db.String(20), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
 
 
 # Function to create users when the app starts
@@ -211,6 +217,9 @@ def create_student():
         state = request.form['state']
         zip_code = request.form['zip_code']
 
+        print("------")
+        print(user_id, dob, gender, year_of_study, emergency_contact_number)
+        print("------")
         # Check if the student already exists in the database (based on user_id)
         existing_student = StudentDetails.query.filter_by(user_id=user_id).first()
         if existing_student:

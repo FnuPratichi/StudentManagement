@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Student Details</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Student Details</h2>
+        <hr>
+        
+        {% if student %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Field</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Date of Birth</strong></td>
+                    <td>{{ student.dob }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Father's Name</strong></td>
+                    <td>{{ student.father_name }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Address</strong></td>
+                    <td>{{ student.address }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Contact Number</strong></td>
+                    <td>{{ student.contact_number }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Gender</strong></td>
+                    <td>{{ student.gender }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Date of Admission</strong></td>
+                    <td>{{ student.date_of_admission }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Course</strong></td>
+                    <td>{{ student.course }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Year of Study</strong></td>
+                    <td>{{ student.year_of_study }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Student Status</strong></td>
+                    <td>{{ student.student_status }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Emergency Contact Number</strong></td>
+                    <td>{{ student.emergency_contact_number }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Nationality</strong></td>
+                    <td>{{ student.nationality }}</td>
+                </tr>
+                <tr>
+                    <td><strong>City</strong></td>
+                    <td>{{ student.city }}</td>
+                </tr>
+                <tr>
+                    <td><strong>State</strong></td>
+                    <td>{{ student.state }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Zip Code</strong></td>
+                    <td>{{ student.zip_code }}</td>
+                </tr>
+            </tbody>
+        </table>
+        {% else %}
+            <p>No student details found.</p>
+        {% endif %}
+        
+        <br>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-primary">Back to Dashboard</a>
+    </div>
+
+    <!-- Bootstrap JS (Optional) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
