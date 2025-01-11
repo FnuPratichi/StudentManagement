@@ -303,12 +303,19 @@ def delete_student(student_id):
 
 
 # Student Dashboard
-@app.route('/student/dashboard')
+@app.route('/student/dashboard', methods=['GET', 'POST'])
 def student_dashboard():
     if 'role' not in session or session['role'] != 'student':
         flash("You need to log in as Student first!", "danger")
         return redirect(url_for('student_login'))
-    return render_template('student_dashboard.html')
+    # Get the student details using the logged-in user's ID
+    student_details = StudentDetails.query.filter_by(user_id=session['user_id']).first()
+    student_name_details = User.query.filter_by(id=session['user_id']).first()
+    if student_details:
+        return render_template('student_dashboard.html', student=student_details, student1 = student_name_details)
+    else:
+        flash("Student details not found!", "danger")
+        return redirect(url_for('student_login'))  # Redirect back to log
 
 # Logout route
 @app.route('/logout')

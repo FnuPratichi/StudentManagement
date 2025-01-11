@@ -4,10 +4,200 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fb;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+        }
+
+        .hero-section {
+            background-color: #6f42c1;
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .hero-section h1 {
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+
+        .hero-section h2 {
+            font-size: 24px;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            display: block;
+            color: #2c3e50;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            font-size: 16px;
+            color: #34495e;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            width: 100%;
+            background-color: #ecf0f1;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            border-color: #2980b9;
+            background-color: #ffffff;
+        }
+
+        .form-group input[readonly] {
+            background-color: #f9f9f9;
+            cursor: not-allowed;
+        }
+
+        .form-group input:disabled {
+            background-color: #ddd;
+        }
+
+        .btn-logout {
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 150px;
+            margin-top: 20px;
+            align-self: center;
+            text-align: center;
+        }
+
+        .btn-logout:hover {
+            background-color: #c0392b;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #888;
+            padding: 20px 0;
+            background-color: #2c3e50;
+            color: white;
+            border-top: 3px solid #34495e;
+        }
+    </style>
 </head>
 <body>
-    <h2>Welcome, Student</h2>
-    <p>Here is your student dashboard.</p>
-    <a href="{{ url_for('logout') }}">Logout</a>
+    <div class="container">
+        <div class="hero-section">
+            <h1>Welcome, {{ student1.username }}!</h1>
+            <h2>Your Student Details</h2>
+        </div>
+        <form action="" method="POST">
+            <div class="form-group">
+                <label for="dob">Date of Birth:</label>
+                <input type="text" id="dob" name="dob" value="{{ student.dob }}" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="father_name">Father's Name:</label>
+                <input type="text" id="father_name" name="father_name" value="{{ student.father_name }}" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <input type="text" id="address" name="address" value="{{ student.address }}" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="contact_number">Contact Number:</label>
+                <input type="text" id="contact_number" name="contact_number" value="{{ student.contact_number }}" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="gender">Gender:</label>
+                <input type="text" id="gender" name="gender" value="{{ student.gender }}" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="date_of_admission">Date of Admission:</label>
+                <input type="text" id="date_of_admission" name="date_of_admission" value="{{ student.date_of_admission }}" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="course">Course:</label>
+                <input type="text" id="course" name="course" value="{{ student.course }}" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="year_of_study">Year of Study:</label>
+                <input type="text" id="year_of_study" name="year_of_study" value="{{ student.year_of_study }}" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="student_status">Student Status:</label>
+                <input type="text" id="student_status" name="student_status" value="{{ student.student_status }}" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="emergency_contact_number">Emergency Contact:</label>
+                <input type="text" id="emergency_contact_number" name="emergency_contact_number" value="{{ student.emergency_contact_number }}" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="nationality">Nationality:</label>
+                <input type="text" id="nationality" name="nationality" value="{{ student.nationality }}" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city" value="{{ student.city }}" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="state">State:</label>
+                <input type="text" id="state" name="state" value="{{ student.state }}" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="zip_code">Zip Code:</label>
+                <input type="text" id="zip_code" name="zip_code" value="{{ student.zip_code }}" readonly>
+            </div>
+            
+
+            <button type="submit" class="btn-logout">
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </button>
+        </form>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Student Dashboard | All Rights Reserved</p>
+    </footer>
 </body>
 </html>
