@@ -1,23 +1,88 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update Student</title>
-</head>
-<body>
-    <h2>Update Student Profile</h2>
-    <form method="POST">
+<form action="" method="POST">
+    <div class="form-group">
+        <label for="student_id">Student ID:</label>
+        <input type="text" id="student_id" name="student_id" value="{{ student.id }}" readonly>
+    </div>
+
+    <div class="form-group">
         <label for="username">Username:</label>
-        <input type="text" name="username" id="username" value="{{ student.username }}" required><br><br>
+        <input type="text" id="username" name="username" value="{{ student.username }}">
+    </div>
 
+    <div class="form-group">
         <label for="email">Email:</label>
-        <input type="email" name="email" id="email" value="{{ student.email }}" required><br><br>
+        <input type="text" id="email" name="email" value="{{ student.email }}">
+    </div>
 
-        <label for="password">Password (leave empty to keep current):</label>
-        <input type="password" name="password" id="password"><br><br>
+    <div class="form-group">
+        <label for="dob">Date of Birth:</label>
+        <input type="text" id="dob" name="dob" value="{{ student_details.dob }}">
+    </div>
 
-        <button type="submit">Update Student</button>
-    </form>
-</body>
-</html>
+    <div class="form-group">
+        <label for="father_name">Father's Name:</label>
+        <input type="text" id="father_name" name="father_name" value="{{ student_details.father_name }}">
+    </div>
+
+    <div class="form-group">
+        <label for="address">Address:</label>
+        <input type="text" id="address" name="address" value="{{ student_details.address }}">
+    </div>
+
+    <div class="form-group">
+        <label for="contact_number">Contact Number:</label>
+        <input type="text" id="contact_number" name="contact_number" value="{{ student_details.contact_number }}">
+    </div>
+
+    <div class="form-group">
+        <label for="gender">Gender:</label>
+        <input type="text" id="gender" name="gender" value="{{ student_details.gender }}">
+    </div>
+
+    <div class="form-group">
+        <label for="date_of_admission">Date of Admission:</label>
+        <input type="text" id="date_of_admission" name="date_of_admission" value="{{ student_details.date_of_admission }}">
+    </div>
+
+    <div class="form-group">
+        <label for="course">Course:</label>
+        <input type="text" id="course" name="course" value="{{ student_details.course }}">
+    </div>
+
+    <div class="form-group">
+        <label for="year_of_study">Year of Study:</label>
+        <input type="text" id="year_of_study" name="year_of_study" value="{{ student_details.year_of_study }}">
+    </div>
+
+    <div class="form-group">
+        <label for="student_status">Student Status:</label>
+        <input type="text" id="student_status" name="student_status" value="{{ student_details.student_status }}">
+    </div>
+
+    <div class="form-group">
+        <label for="emergency_contact_number">Emergency Contact:</label>
+        <input type="text" id="emergency_contact_number" name="emergency_contact_number" value="{{ student_details.emergency_contact_number }}">
+    </div>
+
+    <div class="form-group">
+        <label for="nationality">Nationality:</label>
+        <input type="text" id="nationality" name="nationality" value="{{ student_details.nationality }}">
+    </div>
+
+    <div class="form-group">
+        <label for="city">City:</label>
+        <input type="text" id="city" name="city" value="{{ student_details.city }}">
+    </div>
+
+    <div class="form-group">
+        <label for="state">State:</label>
+        <input type="text" id="state" name="state" value="{{ student_details.state }}">
+    </div>
+
+    <div class="form-group">
+        <label for="zip_code">Zip Code:</label>
+        <input type="text" id="zip_code" name="zip_code" value="{{ student_details.zip_code }}">
+    </div>
+
+    <button type="submit" class="btn-logout">Update Student</button>
+</form>
