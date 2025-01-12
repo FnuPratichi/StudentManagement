@@ -56,6 +56,7 @@ class StudentDetails(db.Model):
     state = db.Column(db.String(50), nullable=False)
     zip_code = db.Column(db.String(20), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    first_login = db.Column(db.Boolean, default=True)  # Track if it's the first login
 
 
 # Function to create users when the app starts
@@ -90,12 +91,20 @@ def before_request():
 @app.route('/', methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
-        role = request.form['role']
+        role = request.form.get('role')  # Use .get() to avoid KeyError
+        session.clear()
+        if not role:  # Check if no role is selected
+            flash('Please select a role.', 'error')  # Display a message if no role is selected
+            return redirect(url_for('home'))  # Redirect back to the home page
+        
         if role == 'admin':
             return redirect(url_for('admin_login'))
         elif role == 'student':
             return redirect(url_for('student_login'))
-    
+        else:
+            flash('Invalid role selected. Please choose again.', 'error')  # Invalid role message
+            return redirect(url_for('home'))
+
     return render_template('home.html')  # Show home page with role selection
 
 # Admin Login Route
@@ -156,6 +165,16 @@ def student_login():
             session['user_id'] = user.id
             session['username'] = user.username
             session['role'] = user.role
+
+
+            # Check if it's the first login
+            student_details = StudentDetails.query.filter_by(user_id=user.id).first()
+            if student_details and student_details.first_login:
+                flash("Welcome! Please reset your password.", "info")
+                return redirect(url_for('reset_password'))  
+            
+
+
             flash("Login successful! Welcome, Student.", "success")
             print(f"Session Info: {session}")  # Debugging session info
             return redirect(url_for('student_dashboard'))  # Redirect to student dashboard
@@ -166,6 +185,38 @@ def student_login():
 
     # Render the student login page if GET request
     return render_template('student_login.html')
+
+@app.route('/student/reset_password', methods=['GET', 'POST'])
+def reset_password():
+    if 'role' not in session or session['role'] != 'student':
+        flash("You need to log in as Student first!", "danger")
+        return redirect(url_for('student_login'))
+
+    if request.method == 'POST':
+        new_password = request.form['new_password']
+        confirm_password = request.form['confirm_password']
+
+        # Ensure passwords match
+        if new_password != confirm_password:
+            flash("Passwords do not match!", "danger")
+            return redirect(url_for('reset_password'))
+
+        # Update the password in the database
+        user = User.query.get(session['user_id'])
+        if user:
+            user.password = generate_password_hash(new_password)
+            db.session.commit()
+
+            # Update first_login flag to False
+            student_details = StudentDetails.query.filter_by(user_id=user.id).first()
+            if student_details:
+                student_details.first_login = False
+                db.session.commit()
+
+            flash("Password reset successful!", "success")
+            return redirect(url_for('student_dashboard'))
+
+    return render_template('reset_password.html')
 
 # Admin Dashboard
 @app.route('/admin/dashboard')
@@ -239,7 +290,7 @@ def create_student():
 
         flash("Student created successfully!", "success")
         return redirect(url_for('view_student', user_id=user_id))
-
+    
     # Render the form for the first part (basic student info)
     user_id = request.args.get('user_id', None)
     if user_id:
@@ -257,31 +308,47 @@ def view_student(user_id):
         return render_template('view_student.html', student=student)
     return "Student not found", 404
 
-# Update Student Route
+
 @app.route('/admin/update_student/<int:student_id>', methods=['GET', 'POST'])
 def update_student(student_id):
     if 'role' not in session or session['role'] != 'admin':
         flash("You must be an admin to access this page.", "danger")
         return redirect(url_for('admin_login'))
-
+    
     student = User.query.get_or_404(student_id)
-
+    student_details = StudentDetails.query.filter_by(user_id=student_id).first()
+    
     if request.method == 'POST':
+        # Update logic for user and student details
         student.username = request.form['username']
         student.email = request.form['email']
         
-        # Optional: Update password (ensure password is hashed)
-        if request.form['password']:
-            student.password = generate_password_hash(request.form['password'])
+        # if request.form['password']:
+        #     student.password = generate_password_hash(request.form['password'])
+        
+        student_details.dob = request.form['dob']
+        student_details.father_name = request.form['father_name']
+        student_details.address = request.form['address']
+        student_details.contact_number = request.form['contact_number']
+        student_details.gender = request.form['gender']
+        student_details.date_of_admission = request.form['date_of_admission']
+        student_details.course = request.form['course']
+        student_details.year_of_study = request.form['year_of_study']
+        student_details.student_status = request.form['student_status']
+        student_details.emergency_contact_number = request.form['emergency_contact_number']
+        student_details.nationality = request.form['nationality']
+        student_details.city = request.form['city']
+        student_details.state = request.form['state']
+        student_details.zip_code = request.form['zip_code']
         
         db.session.commit()
 
         flash("Student profile updated successfully.", "success")
         return redirect(url_for('admin_dashboard'))
 
-    return render_template('update_student.html', student=student)
+    return render_template('update_student.html', student=student, student_details=student_details)
 
-# Delete Student Route with Confirmation
+# Admin Delete Student Route with Confirmation
 @app.route('/admin/delete_student/<int:student_id>', methods=['GET', 'POST'])
 def delete_student(student_id):
     if 'role' not in session or session['role'] != 'admin':
@@ -289,17 +356,20 @@ def delete_student(student_id):
         return redirect(url_for('admin_login'))
 
     student = User.query.get_or_404(student_id)
-
+    student_details = StudentDetails.query.filter_by(user_id=student_id).first()
     # If the request method is GET, show the confirmation page
     if request.method == 'GET':
-        return render_template('delete_student.html', student=student)
-
-    # If the request method is POST, delete the student
-    db.session.delete(student)
-    db.session.commit()
-
-    flash("Student profile deleted successfully.", "success")
-    return redirect(url_for('admin_dashboard'))
+        return render_template('delete_student.html', student=student, student_details=student_details)
+    # If the request method is POST, proceed to delete the student and their details
+    if request.method == 'POST':
+        # Delete associated StudentDetails first
+        if student_details:
+            db.session.delete(student_details)
+        # Delete the User record
+        db.session.delete(student)
+        db.session.commit()
+        flash(f"Student {student.username} has been deleted successfully.", "success")
+        return redirect(url_for('admin_dashboard'))
 
 
 # Student Dashboard
